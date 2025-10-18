@@ -1,0 +1,36 @@
+│   .gitignore
+node_modules
+│   env.d.ts
+│   index.html
+│   package.json
+│   tsconfig.app.json
+│   tsconfig.json
+│   tsconfig.node.json
+│   vite.config.ts
+│
+├───.vscode
+│       extensions.json
+│
+├───public
+│       favicon.ico
+│
+└───src
+    │   App.vue
+    │   main.ts
+    │
+    ├───assets
+    │       base.css
+    │       logo.svg
+    │       main.css
+    │
+    └───components
+        │   HelloWorld.vue
+        │   TheWelcome.vue
+        │   WelcomeItem.vue
+        │
+        └───icons
+                IconCommunity.vue
+                IconDocumentation.vue
+                IconEcosystem.vue
+                IconSupport.vue
+                IconTooling.vue
