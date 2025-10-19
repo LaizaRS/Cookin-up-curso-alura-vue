@@ -1,40 +1,47 @@
 <script lang="ts">
-import { obterCategorias } from "@/http/index";
-import type ICategoria from "@/interfaces/ICategoria";
-import CardCategoria from "./CardCategoria.vue";
+import { obterCategorias } from '@/http/index';
+import type ICategoria from '@/interfaces/ICategoria';
+import CardCategoria from './CardCategoria.vue';
+import BotaoPrincipal from './BotaoPrincipal.vue';
 
 export default {
-  components: {
-    CardCategoria: CardCategoria,
-  },
-
+  name: 'SelecionarIngredientes',
   data() {
     return {
-      categorias: [] as ICategoria[],
+      categorias: [] as ICategoria[]
     };
   },
   async created() {
     this.categorias = await obterCategorias();
   },
-};
+  components: { CardCategoria, BotaoPrincipal },
+  emits: ['adicionarIngrediente', 'removerIngrediente', 'buscarReceitas']
+}
 </script>
 
 <template>
   <section class="selecionar-ingredientes">
     <h1 class="cabecalho titulo-ingredientes">Ingredientes</h1>
+
     <p class="paragrafo-lg instrucoes">
-      Selecione a baixo os ingredientes que voce quer usar nesta receita:
+      Selecione abaixo os ingredientes que você quer usar nesta receita:
     </p>
 
     <ul class="categorias">
       <li v-for="categoria in categorias" :key="categoria.nome">
-        <CardCategoria :categoria="categoria" />
+        <CardCategoria
+          :categoria="categoria"
+          @adicionar-ingrediente="$emit('adicionarIngrediente', $event)"
+          @remover-ingrediente="$emit('removerIngrediente', $event)"
+        />
       </li>
     </ul>
 
     <p class="paragrafo dica">
-      *Atenção: cpmsoderamos que voce tem em casa sal, pimenta e água.
+      *Atenção: consideramos que você tem em casa sal, pimenta e água.
     </p>
+
+    <BotaoPrincipal texto="Buscar receitas!" @click="$emit('buscarReceitas')" />
   </section>
 </template>
 
@@ -46,7 +53,7 @@ export default {
 }
 
 .titulo-ingredientes {
-  color: var(--verde-medio, #3d6d4a);
+  color: var(--verde-medio, #3D6D4A);
   display: block;
   margin-bottom: 1.5rem;
 }

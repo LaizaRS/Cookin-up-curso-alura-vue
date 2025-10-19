@@ -1,14 +1,28 @@
 <script lang="ts">
+import MostrarReceitas from './MostrarReceitas.vue';
 import SelecionarIngredientes from './SelecionarIngredientes.vue';
+import SuaLista from './SuaLista.vue';
+import Tag from './Tag.vue';
 
+type Pagina = 'SelecionarIngredientes' | 'MostrarReceitas';
 
 export default {
-  components: {
-    SelecionarIngredientes: SelecionarIngredientes
-  },
   data() {
     return {
-      ingredientes: ['Cebola', 'Batata', 'Tomate']
+      ingredientes: [] as string[],
+      conteudo: 'SelecionarIngredientes' as Pagina
+    };
+  },
+  components: { SelecionarIngredientes, Tag, SuaLista, MostrarReceitas },
+  methods: {
+    adicionarIngrediente(ingrediente: string) {
+      this.ingredientes.push(ingrediente)
+    },
+    removerIngrediente(ingrediente: string) {
+      this.ingredientes = this.ingredientes.filter(iLista => ingrediente !== iLista);
+    },
+    navegar(pagina: Pagina) {
+      this.conteudo = pagina;
     }
   }
 }
@@ -16,23 +30,20 @@ export default {
 
 <template>
   <main class="conteudo-principal">
-    <section>
-      <span class="subtitulo-lg sualista-texto">
-        Sua Lista:
-      </span>
-      <ul v-if="ingredientes.length" class="ingredientes-sua-lista">
-        <li v-for="ingrediente in ingredientes" v-bind:key="ingrediente" class="ingrediente">
-          {{ ingrediente }}
-        </li>
-      </ul>
+    <SuaLista :ingredientes="ingredientes" />
 
-      <p v-else class="paragrafo lista-vazia">
-      <img src="../assets/images/icones/lista-vazia.svg" alt="Icone de pesquisa">
-      Sua lista está vazia, selecione ingredientes para iniciar.
-      </p>
-    </section>
-
-    <SelecionarIngredientes />
+    <KeepAlive include="SelecionarIngredientes">
+      <SelecionarIngredientes v-if="conteudo === 'SelecionarIngredientes'"
+        @adicionar-ingrediente="adicionarIngrediente"
+        @remover-ingrediente="removerIngrediente"
+        @buscar-receitas="navegar('MostrarReceitas')"
+      />
+  
+      <MostrarReceitas v-else-if="conteudo === 'MostrarReceitas'"
+        :ingredientes="ingredientes"
+        @editar-receitas="navegar('SelecionarIngredientes')"
+      />
+    </KeepAlive>
   </main>
 </template>
 
@@ -61,18 +72,6 @@ export default {
   justify-content: center;
   gap: 1rem 1.5rem;
   flex-wrap: wrap;
-}
-
-.ingrediente {
-  display: inline-block;
-  border-radius: 0.5rem;
-  min-width: 4.25rem;
-  padding: 0.5rem;
-  text-align: center;
-    transition: 0.2s;
-    color: var(--creme, #FFFAF3);
-  background: var(--coral, #F0633C);
-  font-weight: 700;
 }
 
 .lista-vazia {
